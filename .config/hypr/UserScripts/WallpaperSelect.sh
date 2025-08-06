@@ -101,7 +101,7 @@ menu() {
 # Offer SDDM Simple Wallpaper Option (only for non-video wallpapers)
 set_sddm_wallpaper() {
   sleep 1
-  sddm_simple="/usr/share/sddm/themes/simple_sddm_2"
+  sddm_simple="/usr/share/sddm/themes/simple-sddm-2-master"
 
   if [ -d "$sddm_simple" ]; then
 
