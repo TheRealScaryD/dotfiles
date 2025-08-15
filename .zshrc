@@ -13,6 +13,9 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 #Set Default Editor
 export EDITOR=nvim
 
+#Oh-My-ZSH Update Reminder
+zstyle ':omz:update' mode reminder
+
 #Oh-My-ZSH Setup#
 export ZSH="$HOME/.oh-my-zsh"
 
