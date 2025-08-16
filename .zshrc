@@ -31,7 +31,7 @@ zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
-zinit load zsh-users/zsh-history-substring-search
+zinit light zsh-users/zsh-history-substring-search
 
 #Install ZSH snippits
 zinit snippet OMZ::plugins/git/git.plugin.zsh
@@ -46,6 +46,8 @@ source /etc/bash/bashrc.d/command-not-found.sh
 autoload -U compinit promptinit
 compinit
 promptinit prompt gentoo
+
+zinit cdreplay -q
 
 #Style for autocompletions
 zstyle ':completions::complete:*' use-cache 1
@@ -76,16 +78,17 @@ alias lt='ls --tree'
 
 #History Setup
 HISTFILE=~/.zsh_history #File to save history upon edit
-HISTSIZE=1000000000 #Max number of events stored in history list
+HISTSIZE=1100000000 #Max number of events stored in history list
 SAVEHIST=1000000000 #Max number of events stored in history file
-HISDUP=erase
-setopt appendhistory
-setopt sharehistory
-setopt hist_ignore_space
-setopt hist_ignore_all_dups
-setopt hist_save_no_dups
-setopt hist_ignore_dups
-setopt hist_find_no_dups
+setopt EXTENDED_HISTORY #write history file in the ":start:elapsed;command" format
+setopt INC_APPEND_HISTORY #Write to the history file immediately, not when the shell exits
+setopt SHARE_HISTORY #Share history between all sessions
+setopt HIST_IGNORE_SPACE #Don't record an entry starting with a space
+setopt HIST_IGNORE_ALL_DUPS #Delete old recorded entry if new entry is a duplicate
+setopt HIST_SAVE_NO_DUPS #Don't write duplicate entries in the history file
+setopt HIST_IGNORE_DUPS #Don't record an entry that was just recorded again
+setopt HIST_FIND_NO_DUPS #Do not display a line previously found
+setopt HIST_EXPIRE_DUPS_FIRST #Expire duplicate entries first when trimming history
 
 #Settings for NNN File Manager
 export NNN_FIFO="/tmp/nnn.fifo"
