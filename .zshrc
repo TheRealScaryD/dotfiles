@@ -5,41 +5,67 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 #Set Default Editor
 export EDITOR=nvim
 
-#Oh-My-ZSH Update Reminder
-zstyle ':omz:update' mode reminder
+#Set the directory where we want to store zinit and plugins
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
-#Oh-My-ZSH Setup#
-export ZSH="$HOME/.oh-my-zsh"
+#Download zinit, if its not installed
+if [ ! -d "$ZINIT_HOME" ]; then
+  mkdir - p "$(dirname $ZINIT_HOME)"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
 
-ZSH_THEME="powerlevel10k/powerlevel10k"
+#Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
 
-plugins=(
-    git
-    archlinux
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-)
+# Install Powerlevel10k
+zinit ice depth=1; zinit light romkatv/Powerlevel10k
 
-source $ZSH/oh-my-zsh.sh
+#Install ZSH plugins
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+zinit light Aloxaf/fzf-tab
+zinit load zsh-users/zsh-history-substring-search
 
-# Check archlinux plugin commands here
-# https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/archlinux
+#Install ZSH snippits
+zinit snippet OMZ::plugins/git/git.plugin.zsh
+zinit snippet OMZP::sudo
+zinit snippet OMZP::command-not-found
 
-# Display Pokemon-colorscripts
-# Project page: https://gitlab.com/phoneybadger/pokemon-colorscripts#on-other-distros-and-macos
-#pokemon-colorscripts --no-title -s -r #without fastfetch
-pokemon-colorscripts --no-title -s -r | fastfetch -c $HOME/.config/fastfetch/config-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+#Load Command-Not-Found
+source /etc/bash/bashrc.d/command-not-found.sh
 
-# fastfetch. Will be disabled if above colorscript was chosen to install
-#fastfetch -c $HOME/.config/fastfetch/config-compact.jsonc
+#Load Autocompletions
+#Enabling Portage Completions & Gentoo Prompt
+autoload -U compinit promptinit
+compinit
+promptinit prompt gentoo
+
+#Style for autocompletions
+zstyle ':completions::complete:*' use-cache 1
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+
+# Cycle through history based on characters already typed on the line
+autoload -U up-line-or-search
+autoload -U down-line-or-search
+zle -N up-line-or-search
+zle -N down-line-or-search
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# Shell integrations
+eval "$(fzf --zsh)"
+eval "$(zoxide init --cmd cd zsh)"
 
 # Set-up icons for files/directories in terminal using lsd
 alias ls='lsd'
@@ -48,28 +74,18 @@ alias la='ls -a'
 alias lla='ls -la'
 alias lt='ls --tree'
 
-# Set-up FZF key bindings (CTRL R for fuzzy history finder)
-source <(fzf --zsh)
-
-#ZSH History Setup
-#File to save history upon exit
-HISTFILE=~/.zsh_history
-#Max number of events stored in history list
-HISTSIZE=1000000000
-#Maximum number of history events to save in history file
-SAVEHIST=1000000000
+#History Setup
+HISTFILE=~/.zsh_history #File to save history upon edit
+HISTSIZE=1000000000 #Max number of events stored in history list
+SAVEHIST=1000000000 #Max number of events stored in history file
+HISDUP=erase
 setopt appendhistory
-
-#Enabling Portage Completions & Gentoo Prompt
-autoload -U compinit promptinit
-compinit
-promptinit prompt gentoo
-
-#Enabling cache for completions for ZSH
-zstyle ':completion::complete:*' use-cache 1
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
 
 #Settings for NNN File Manager
 export NNN_FIFO="/tmp/nnn.fifo"
@@ -77,3 +93,9 @@ export NNN_PLUG="i:imgview;p:preview-tui;w:wallpaper"
 export SPLIT="h" # or "v" for vertical split
 export NNN_OPTS="eH"
 export NNN_PREVIEWDIR="$XDG_CACHE_HOME/nnn/previews"
+
+#Display Pokemon Go Colorscripts
+pokemon-go-colorscripts --no-title -r -s | fastfetch -c $HOME/.config/fastfetch/config-pokemon.jsonc --logo-type file-raw --logo-height 10 --logo-width 5 --logo -
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
