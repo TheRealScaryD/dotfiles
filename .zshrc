@@ -38,6 +38,10 @@ zinit snippet OMZ::plugins/git/git.plugin.zsh
 zinit snippet OMZP::sudo
 zinit snippet OMZP::command-not-found
 
+#Disable zsh-history-substring-search highlights
+#HISTORY_SUBSTRING_SEARCH_HIGHLIGHT_FOUND=
+#HISTORY_SUBSTRING_SEARCH_HIGHTLIGHT_NOT_FOUND=
+
 #Load Command-Not-Found
 source /etc/bash/bashrc.d/command-not-found.sh
 
