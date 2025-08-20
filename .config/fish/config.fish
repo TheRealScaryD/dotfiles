@@ -12,9 +12,6 @@ if status is-interactive
     #Set Default Browser
     set -gx BROWSER firefox
 
-    #Set fish escape delay for sudope plugin (Restore ESC-ESC functionality)
-    set fish_escape_delay_ms 1000
-
     # XDG Base Directory Specification
     set -q XDG_CACHE_HOME || set -U XDG_CACHE_HOME $HOME/.cache
     set -q XDG_CONFIG_HOME || set -U XDG_CONFIG_HOME $HOME/.config
